@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Global & Chemical Hierarchy</title>
+    <style>
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f4f7f6; display: flex; flex-direction: column; align-items: center; padding: 30px; margin: 0; }
+        .nav { margin-bottom: 20px; display: flex; gap: 10px; }
+        .stage-container { background: white; padding: 50px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.07); width: 90%; max-width: 1000px; min-height: 450px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .unit-box { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+        .unit { padding: 18px 28px; border-radius: 15px; font-weight: 700; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .unit:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        
+        /* Level Colors (Linguistic) */
+        .sentence { background-color: #1e272e; color: #fff; font-size: 2.2rem; border: 2px solid #485460; }
+        .word { background-color: #3498db; color: #fff; font-size: 1.6rem; }
+        .morpheme { background-color: #2ecc71; color: #fff; font-size: 1.3rem; }
+        .phoneme { background-color: #e74c3c; color: #fff; font-size: 1.1rem; border-radius: 50%; width: 45px; height: 45px; padding: 0; justify-content: center; }
+
+        /* Level Colors (Chemical) */
+        .matter { background-color: #2c3e50; color: #fff; font-size: 2.2rem; border: 2px solid #bdc3c7; }
+        .molecule { background-color: #8e44ad; color: #fff; font-size: 1.6rem; }
+        .atom { background-color: #f39c12; color: #fff; font-size: 1.3rem; }
+        .particle { background-color: #d35400; color: #fff; font-size: 1.1rem; border-radius: 50%; width: 60px; height: 60px; padding: 0; justify-content: center; }
+        .quark { background-color: #c0392b; color: #fff; font-size: 0.9rem; border-radius: 8px; width: 40px; height: 40px; padding: 0; justify-content: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.3); }
+
+        .label { font-size: 0.55rem; margin-top: 6px; opacity: 0.7; font-weight: 400; text-transform: uppercase; }
+        .info-card { margin-top: 40px; background: #fff; border-left: 6px solid #1e272e; padding: 20px; width: 100%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        button { padding: 12px 24px; font-size: 1rem; cursor: pointer; border: none; background: #1e272e; color: white; border-radius: 10px; transition: 0.2s; }
+        button:hover { background: #485460; }
+        button.active { background: #3498db; }
+        button.chem-active { background: #8e44ad; }
+    </style>
+</head>
+<body>
+
+    <h2 style="margin-bottom:10px;">Cross-Domain Decomposition</h2>
+    <div class="nav">
+        <button id="btn-ko" class="active" onclick="switchLang('ko')">한국어 (Korean)</button>
+        <button id="btn-en" onclick="switchLang('en')">English (영어)</button>
+        <button id="btn-h2o" onclick="switchLang('h2o')">Matter (H₂O)</button>
+    </div>
+
+    <div class="stage-container" id="stage"></div>
+
+    <div class="info-card">
+        <div id="info-title" style="font-weight:bold; font-size:1.1rem; margin-bottom:5px;">Hierarchy Analysis</div>
+        <div id="info-desc">항목을 클릭하여 하위 계층으로 분해해보세요.</div>
+    </div>
+
+    <script>
+        const domains = {
+            ko: {
+                level: 'sentence', text: '나는 사과를 먹었다',
+                desc: '한국어 문장: 주어+목적어+동사(SOV) 구조입니다.',
+                children: [
+                    { 
+                        level: 'word', text: '나는', desc: '어절: 나(대명사) + 는(조사)',
+                        children: [
+                            { level: 'morpheme', text: '나', desc: '실질형태소: 1인칭 대명사', children: [{level:'phoneme', text:'ㄴ'}, {level:'phoneme', text:'ㅏ'}]},
+                            { level: 'morpheme', text: '는', desc: '형식형태소: 보조사', children: [{level:'phoneme', text:'ㄴ'}, {level:'phoneme', text:'ㅡ'}, {level:'phoneme', text:'ㄴ'}]}
+                        ]
+                    },
+                    { 
+                        level: 'word', text: '사과를', desc: '어절: 사과(명사) + 를(조사)',
+                        children: [
+                            { level: 'morpheme', text: '사과', desc: '실질형태소: 체언(명사)', children: [{level:'phoneme', text:'ㅅ'}, {level:'phoneme', text:'ㅏ'}, {level:'phoneme', text:'ㄱ'}, {level:'phoneme', text:'ㅘ'}]},
+                            { level: 'morpheme', text: '를', desc: '형식형태소: 목적격 조사', children: [{level:'phoneme', text:'ㄹ'}, {level:'phoneme', text:'ㅡ'}, {level:'phoneme', text:'ㄹ'}]}
+                        ]
+                    },
+                    { 
+                        level: 'word', text: '먹었다', desc: '어절: 먹-(어간) + -었-(시제) + -다(어미)',
+                        children: [
+                            { level: 'morpheme', text: '먹-', desc: '어간: 동사의 핵심 의미', children: [{level:'phoneme', text:'ㅁ'}, {level:'phoneme', text:'ㅓ'}, {level:'phoneme', text:'ㄱ'}]},
+                            { level: 'morpheme', text: '-었-', desc: '선어말어미: 과거 시제', children: [{level:'phoneme', text:'ㅓ'}, {level:'phoneme', text:'ㅆ'}]},
+                            { level: 'morpheme', text: '-다', desc: '어말어미: 종결 어미', children: [{level:'phoneme', text:'ㄷ'}, {level:'phoneme', text:'ㅏ'}]}
+                        ]
+                    }
+                ]
+            },
+            en: {
+                level: 'sentence', text: 'I ate an apple',
+                desc: 'English Sentence: Subject + Verb + Object (SVO) structure.',
+                children: [
+                    { level: 'word', text: 'I', desc: 'Word: 1st person pronoun.', children: [{level:'morpheme', text:'I', desc:'Free Morpheme', children: [{level:'phoneme', text:'aɪ'}]}]},
+                    { 
+                        level: 'word', text: 'ate', desc: 'Word: Past tense of "eat" (Irregular).',
+                        children: [
+                            { level: 'morpheme', text: 'eat', desc: 'Root Morpheme', children: [{level:'phoneme', text:'eɪ'}, {level:'phoneme', text:'t'}]},
+                            { level: 'morpheme', text: '[PAST]', desc: 'Inflectional Morpheme (Abstract)', children: [{level:'phoneme', text:'-'}]}
+                        ]
+                    },
+                    { level: 'word', text: 'an', desc: 'Word: Indefinite Article.', children: [{level:'morpheme', text:'an', desc:'Function Word', children: [{level:'phoneme', text:'ə'}, {level:'phoneme', text:'n'}]}]},
+                    { 
+                        level: 'word', text: 'apple', desc: 'Word: Noun.',
+                        children: [
+                            { level: 'morpheme', text: 'apple', desc: 'Free Morpheme', children: [{level:'phoneme', text:'æ'}, {level:'phoneme', text:'p'}, {level:'phoneme', text:'ə'}, {level:'phoneme', text:'l'}]}
+                        ]
+                    }
+                ]
+            },
+            h2o: {
+                level: 'matter', text: 'Water (물)',
+                desc: '물질: 수많은 물 분자들이 모여 이루어진 액체 상태의 물질입니다.',
+                children: [
+                    {
+                        level: 'molecule', text: 'H₂O', desc: '분자: 수소 원자 2개와 산소 원자 1개가 결합한 형태입니다.',
+                        children: [
+                            { 
+                                level: 'atom', text: 'Oxygen (O)', desc: '산소 원자: 8개의 양성자, 중성자, 전자로 구성됩니다.',
+                                children: [
+                                    {
+                                        level: 'particle', text: 'P+', desc: '양성자(Proton): 2개의 Up 쿼크와 1개의 Down 쿼크로 구성됩니다.',
+                                        children: [
+                                            {level:'quark', text:'u', desc:'Up Quark (+2/3e)'},
+                                            {level:'quark', text:'u', desc:'Up Quark (+2/3e)'},
+                                            {level:'quark', text:'d', desc:'Down Quark (-1/3e)'}
+                                        ]
+                                    },
+                                    {
+                                        level: 'particle', text: 'N', desc: '중성자(Neutron): 1개의 Up 쿼크와 2개의 Down 쿼크로 구성됩니다.',
+                                        children: [
+                                            {level:'quark', text:'u', desc:'Up Quark (+2/3e)'},
+                                            {level:'quark', text:'d', desc:'Down Quark (-1/3e)'},
+                                            {level:'quark', text:'d', desc:'Down Quark (-1/3e)'}
+                                        ]
+                                    },
+                                    {level:'particle', text:'e-', desc:'전자(Electron): 더 이상 쪼개지지 않는 기본 입자(Lepton)입니다.'}
+                                ]
+                            },
+                            { 
+                                level: 'atom', text: 'Hydrogen (H)', desc: '수소 원자: 가장 단순한 원자로 1개의 양성자와 전자로 구성됩니다.',
+                                children: [
+                                    {
+                                        level: 'particle', text: 'P+', desc: '양성자(Proton): u-u-d 쿼크 조합입니다.',
+                                        children: [
+                                            {level:'quark', text:'u', desc:'Up Quark'},
+                                            {level:'quark', text:'u', desc:'Up Quark'},
+                                            {level:'quark', text:'d', desc:'Down Quark'}
+                                        ]
+                                    },
+                                    {level:'particle', text:'e-', desc:'전자(Electron): 기본 입자입니다.'}
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentDomain = 'ko';
+        const stage = document.getElementById('stage');
+        const infoTitle = document.getElementById('info-title');
+        const infoDesc = document.getElementById('info-desc');
+
+        function switchLang(key) {
+            currentDomain = key;
+            document.getElementById('btn-ko').className = key === 'ko' ? 'active' : '';
+            document.getElementById('btn-en').className = key === 'en' ? 'active' : '';
+            document.getElementById('btn-h2o').className = key === 'h2o' ? 'chem-active' : '';
+            render([domains[key]]);
+        }
+
+        function render(units) {
+            stage.innerHTML = '';
+            const container = document.createElement('div');
+            container.className = 'unit-box';
+            
+            units.forEach(unit => {
+                const div = document.createElement('div');
+                div.className = `unit ${unit.level}`;
+                div.innerHTML = `<span>${unit.text}</span><span class="label">${unit.level}</span>`;
+                
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    infoTitle.innerText = unit.level.toUpperCase();
+                    infoDesc.innerText = unit.desc || "The basic building block of this level.";
+                    if (unit.children) {
+                        const nextLevel = units.flatMap(u => u === unit ? u.children : [u]);
+                        render(nextLevel);
+                    }
+                };
+                container.appendChild(div);
+            });
+            stage.appendChild(container);
+        }
+
+        switchLang('ko');
+    </script>
+</body>
+</html>
